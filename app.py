@@ -4,7 +4,7 @@ import telegram
 from flask import Flask, request
 import os
 
-TOKEN="2131425995:AAFAOT9xgDM00FRMI9lyA7SvefK7LbS__40"
+TOKEN=os.getenv('BOT_TOKEN')
 URL="https://python-telegram-echobot-lldhti.codecapsules.co.za/"
 
 bot = telegram.Bot(token=TOKEN)
