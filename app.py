@@ -1,7 +1,4 @@
-import re
-from flask import Flask, request
 import os
-
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 def start(update, context):
@@ -32,7 +29,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-#TOKEN=os.getenv('BOT_TOKEN')
-#URL="https://python-telegram-echobot-lldhti.codecapsules.co.za/"
