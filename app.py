@@ -1,32 +1,50 @@
+from flask import Flask, request
+import telegram
 import os
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+TOKEN = os.getenv('BOT_TOKEN')
+URL = os.getenv('URL')
+bot = telegram.Bot(token=TOKEN)
 
-def start(update, context):
-    context.bot.send_message(chat_id=update.effective_chat.id, text="Hi! I respond by echoing messages. Give it a try!")
+app = Flask(__name__)
 
-def echo(update, context):
-    """Echo the user message."""
-    update.message.reply_text(update.message.text)
+@app.route('/{}'.format(TOKEN), methods=['POST'])
+def respond():
+   # retrieve the message in JSON and then transform it to Telegram object
+   update = telegram.Update.de_json(request.get_json(force=True), bot)
+   chat_id = update.message.chat.id
+   msg_id = update.message.message_id
 
-def main():
-    TOKEN = os.getenv('BOT_TOKEN')
-    #URL = os.getenv('URL')
-    updater = Updater(token=TOKEN, use_context=True)
-    dispatcher = updater.dispatcher
+   # Telegram understands UTF-8, so encode text for unicode compatibility
+   text = update.message.text.encode('utf-8').decode()
+  
+   # the first time you chat with the bot AKA the welcoming message
+   if text == "/start":
+       # print the welcoming message
+       bot_welcome = "Hi! I respond by echoing messages. Give it a try!"
+       # send the welcoming message
+       bot.sendMessage(chat_id=chat_id, text=bot_welcome, reply_to_message_id=msg_id)
 
-    start_handler = CommandHandler("start", start)
+   else:
+       bot.sendMessage(chat_id=chat_id, text=text)
 
-    dispatcher.add_handler(start_handler)
+   return 'ok'
 
-    # on noncommand i.e message - echo the message on Telegram
-    dispatcher.add_handler(MessageHandler(Filters.text, echo))
+@app.route('/setwebhook', methods=['GET', 'POST'])
+def set_webhook():
+    # we use the bot object to link the bot to our app which live
+    # in the link provided by URL
+    s = bot.setWebhook('{URL}{HOOK}'.format(URL=URL, HOOK=TOKEN))
+    # something to let us know things work
+    if s:
+        return "webhook setup ok"
+    else:
+        return "webhook setup failed"
 
-    #updater.start_polling()
-
-    PORT = int(os.environ.get('PORT'))
-    HOOK_URL = 'https://python-telegram-echobot-zehdpu.codecapsules.co.za' + '/' + TOKEN
-    updater.start_webhook(listen='0.0.0.0', port=PORT, url_path=TOKEN, webhook_url=HOOK_URL)
-    updater.idle()
+@app.route('/')
+def index():
+    return 'Hello, welcome to the telegram bot index page'
 
 if __name__ == '__main__':
-    main()
+    # note the threaded arg which allow
+    # your app to have more than one thread
+    app.run(threaded=True)
