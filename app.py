@@ -42,7 +42,7 @@ def set_webhook():
 
 @app.route('/')
 def index():
-    return '.'
+    return 'Hello, welcome to the telegram bot index page'
 
 if __name__ == '__main__':
     # note the threaded arg which allow
