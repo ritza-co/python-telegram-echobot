@@ -25,7 +25,7 @@ def respond():
        bot.sendMessage(chat_id=chat_id, text=bot_welcome, reply_to_message_id=msg_id)
 
    else:
-       bot.sendMessage(chat_id=chat_id, text=text, reply_to_message_id=msg_id)
+       bot.sendMessage(chat_id=chat_id, text=text)
 
    return 'ok'
 
