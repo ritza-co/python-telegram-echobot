@@ -10,7 +10,7 @@ def echo(update, context):
 
 def main():
     TOKEN = os.getenv('BOT_TOKEN')
-    URL = os.getenv('URL')
+    #URL = os.getenv('URL')
     updater = Updater(token=TOKEN, use_context=True)
     dispatcher = updater.dispatcher
 
@@ -24,7 +24,7 @@ def main():
     #updater.start_polling()
 
     PORT = int(os.environ.get('PORT'))
-    HOOK_URL = URL + '/' + TOKEN
+    HOOK_URL = 'https://python-telegram-echobot-zehdpu.codecapsules.co.za/' + '/' + TOKEN
     updater.start_webhook(listen='0.0.0.0', port=PORT, url_path=TOKEN, webhook_url=HOOK_URL)
     updater.idle()
 
